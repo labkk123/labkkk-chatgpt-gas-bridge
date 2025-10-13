@@ -7,7 +7,7 @@
     },
     "servers": [
       {
-        "url": "https://your-app-name.onrender.com",
+        "url": "https://labkkk-chatgpt-gas-bridge.onrender.com",
         "description": "Deployed Node.js server"
       }
     ],
