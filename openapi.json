@@ -1,52 +1,92 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "English Memo API",
-      "version": "1.0.0",
-      "description": "API for adding and retrieving vocabulary memos from Google Sheets."
-    },
-    "servers": [
-      {
-        "url": "https://labkkk-chatgpt-gas-bridge.onrender.com",
-        "description": "Deployed Node.js server"
-      }
-    ],
-    "paths": {
-      "/function/addWord": {
-        "post": {
-          "summary": "Add a word to the vocabulary memo sheet",
-          "operationId": "addWord",
-          "requestBody": {
-            "required": true,
+  "openapi": "3.1.0",
+  "info": {
+    "title": "English Memo API",
+    "version": "1.0.0",
+    "description": "API for adding and retrieving vocabulary memos from Google Sheets."
+  },
+  "servers": [
+    {
+      "url": "https://labkkk-chatgpt-gas-bridge.onrender.com",
+      "description": "Deployed Node.js server"
+    }
+  ],
+  "paths": {
+    "/function/addWord": {
+      "post": {
+        "summary": "Add a word to the vocabulary memo sheet",
+        "operationId": "addWord",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "word": { "type": "string" },
+                  "meaning": { "type": "string" },
+                  "example": { "type": "string" },
+                  "memo": { "type": "string" }
+                },
+                "required": ["word", "meaning"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Word successfully added",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "word": { "type": "string" },
-                    "meaning": { "type": "string" },
-                    "example": { "type": "string" },
-                    "memo": { "type": "string" }
-                  },
-                  "required": ["word", "meaning"]
+                    "source": { "type": "string" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "status": { "type": "string" },
+                        "message": { "type": "string" }
+                      }
+                    }
+                  }
                 }
               }
             }
-          },
-          "responses": {
-            "200": {
-              "description": "Word successfully added",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "source": { "type": "string" },
-                      "result": {
-                        "type": "object",
-                        "properties": {
-                          "status": { "type": "string" },
-                          "message": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "/function/getMemos": {
+      "get": {
+        "summary": "Retrieve all memos from the Google Sheet",
+        "operationId": "getMemos",
+        "responses": {
+          "200": {
+            "description": "List of all memos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "source": { "type": "string" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "status": { "type": "string" },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "word": { "type": "string" },
+                              "meaning": { "type": "string" },
+                              "example": { "type": "string" },
+                              "memo": { "type": "string" },
+                              "updated": { "type": "string" }
+                            }
+                          }
                         }
                       }
                     }
@@ -59,4 +99,6 @@
       }
     }
   }
+}
+
   
