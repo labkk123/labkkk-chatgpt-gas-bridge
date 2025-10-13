@@ -134,10 +134,11 @@ app.post("/function/addWord", async (req, res) => {
 });
 
 // ---- GET: getMemos ----
+const gasUrl = process.env.GAS_ENDPOINT;
+
 app.get("/function/getMemos", async (req, res) => {
   try {
-    // GASに getMemos アクションを送信
-    const gasResponse = await fetch(process.env.GAS_WEBAPP_URL, {
+    const gasResponse = await fetch(gasUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "getMemos" })
@@ -150,6 +151,7 @@ app.get("/function/getMemos", async (req, res) => {
     res.status(500).json({ error: "Failed to call GAS Web App for getMemos" });
   }
 });
+
 
 
 // ==== 起動 ====
