@@ -136,9 +136,26 @@ app.post("/function/addWord", async (req, res) => {
 // ==== 起動 ====
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
+// openapi.jsonを返す処理（Render対応版）
+const fs = require("fs");
 const path = require("path");
+
 app.get("/openapi.json", (req, res) => {
-  res.sendFile(path.join(__dirname, "openapi.json"));
+  // Render の実行ディレクトリ確認
+  const basePath = process.cwd();
+  const filePath = path.join(basePath, "openapi.json");
+
+  console.log("📂 Current working dir:", basePath);
+  console.log("📄 Looking for openapi.json at:", filePath);
+
+  if (!fs.existsSync(filePath)) {
+    console.error("❌ openapi.json not found at:", filePath);
+    return res.status(404).send("openapi.json not found");
+  }
+
+  res.setHeader("Content-Type", "application/json");
+  res.sendFile(filePath);
 });
+
 
 
