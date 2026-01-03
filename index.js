@@ -10,6 +10,7 @@ app.use(express.json());
 // ==== 環境変数 ====
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const GAS_ENDPOINT = process.env.GAS_ENDPOINT || process.env.GAS_WEBAPP_URL;
+console.log("GAS_ENDPOINT =", GAS_ENDPOINT);
 const PORT = process.env.PORT || 3000;
 
 if (!OPENAI_KEY) {
@@ -138,16 +139,27 @@ const gasUrl = process.env.GAS_ENDPOINT;
 
 app.get("/function/getMemos", async (req, res) => {
   try {
-    const gasResponse = await fetch(gasUrl, {
+    const gasResponse = await fetch(GAS_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "getMemos" })
     });
 
-    const result = await gasResponse.json();
-    res.json({ source: "GAS", result });
+    const text = await gasResponse.text(); // ← まず生テキストで受け取る
+    console.log("GAS raw response status:", gasResponse.status);
+    console.log("GAS raw response text (first 300 chars):", text.slice(0, 300));
+
+    // JSONならパース、JSONでなければそのまま返す
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      parsed = { nonJson: true, text };
+    }
+
+    res.json({ source: "GAS", result: parsed });
   } catch (error) {
-    console.error(error);
+    console.error("GET /function/getMemos error:", error);
     res.status(500).json({ error: "Failed to call GAS Web App for getMemos" });
   }
 });
